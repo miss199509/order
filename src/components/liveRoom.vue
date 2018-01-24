@@ -14,7 +14,16 @@
         </p>
       </div>
     </header>
-
+    
+    <div class="video_box">
+      <canvas id="jsmpeg-player"></canvas>
+      <canvas id="jsmpeg-player2"></canvas>
+      <div class="videoSet_up">
+        <p>
+          <img src=""/>
+        </p>
+      </div>
+    </div>
   
     <div class="operation_box">
       <div class="operation_padding">
@@ -58,6 +67,33 @@ export default {
     return {
 
     }
+  },
+  mounted(){
+    var client = AgoraCMH5SDK.createClient();
+    client.init('fa715ad316694ac8a88cbb05a878fb15', 'alice', {
+      //对应的动态key，如果没有请不需要传null，直接不带这个参数即可，可选 alicerm1 AliceRm1
+      //key: key,
+      //主摄像头uid，默认为1，可选
+      uid1: 2587758,
+      //副摄像头uid，默认为2，可选
+      uid2: 2
+    }, function(){
+      //初始化成功
+      client.play({
+        //canvas 1 id
+        canvas1: "jsmpeg-player",
+        //canvas 2 id
+        canvas2: "jsmpeg-player2"
+      }, function(){
+        //视频开始播放的回调
+        console.log("started playing..");
+        document.getElementById('jsmpeg-player').style.width = "100%";
+        let height_ = document.documentElement.clientHeight-207;
+        document.getElementById('jsmpeg-player').style.height = height_+"px";
+
+      });
+    });
+
   }
 }
 </script>
@@ -106,6 +142,13 @@ a {
 
 }
 
+.video_box{
+  position: relative;
+}
+.videoSet_up{
+  position: absolute;
+  top: 0px;
+}
 
 .livePrice li{
   display: flex;
@@ -139,6 +182,8 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding-top: 7px;
+  padding-bottom: 13px;
 }
 
 .operation p{

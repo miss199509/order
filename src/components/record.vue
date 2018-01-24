@@ -7,9 +7,33 @@
       </strong>
     </header>
     
-    <ul>
+
+    <div class="record_ranking">
+      <p class="record_ranking_title">
+        <img width="63px;" src="../assets/icon_two@2x.png"/>
+        <img class="icon_one" width="63px;" src="../assets/icon_one@2x.png"/>
+        <img width="63px;" src="../assets/icon_three@2x.png"/>
+      </p>
       
-    </ul>
+      <div class="rankingBack">
+        <p class="name">
+          <span>逗逼</span>
+          <span class="one">逗逼</span>
+          <span class="three">逗逼</span>
+        </p>
+        <p class="num">
+          <span>抓取<i>10</i>次</span>
+          <span>抓取<i>10</i>次</span>
+          <span>抓取<i>10</i>次</span>
+        </p>
+      </div>
+
+      <ul>
+        <li>
+        
+        </li>
+      </ul>
+    </div>
 
   </div>
 </template>
@@ -77,5 +101,61 @@ a {
 .record_nav .recordMark{
   color: #E3B249;
   border-bottom: 3px solid #E3B249;
+}
+
+.rankingBack{
+  background-image: url('../assets/bg_1-3Rank@2x.png');
+  background-position: center center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 130px;
+  position: relative;
+}
+.rankingBack p{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.rankingBack .num{
+  position: absolute;
+  bottom: 11px;
+  width: 100%;
+}
+.rankingBack span{
+  font-size: 15px;
+  color: #7F7F7F;
+}
+.rankingBack i{
+  font-size: 23px;
+  color: #FFFAC8;
+  margin: 0px 1px;
+}
+
+.rankingBack .name{
+  height: 45px;
+  position: absolute;
+  width: 100%;
+  top: -11px;
+}
+.rankingBack .one{
+  margin-top: -55px;
+}
+.rankingBack .three{
+  margin-top: 25px;
+}
+
+.record_ranking{
+  padding: 0px 20px;
+}
+
+.record_ranking_title{
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin-top: 23px;
+}
+.record_ranking_title .icon_one{
+  margin-bottom: 70px;
 }
 </style>
