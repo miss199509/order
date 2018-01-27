@@ -23,6 +23,8 @@ p,ul,li{
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
+  max-width: 500px;
+  margin: auto;
 }
 html,body{
 	padding: 0px;

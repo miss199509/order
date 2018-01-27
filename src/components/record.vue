@@ -7,38 +7,83 @@
       </strong>
     </header>
     
-
-    <div class="record_ranking">
-      <p class="record_ranking_title">
-        <img width="63px;" src="../assets/icon_two@2x.png"/>
-        <img class="icon_one" width="63px;" src="../assets/icon_one@2x.png"/>
-        <img width="63px;" src="../assets/icon_three@2x.png"/>
-      </p>
-      
-      <div class="rankingBack">
-        <p class="name">
-          <span>逗逼</span>
-          <span class="one">逗逼</span>
-          <span class="three">逗逼</span>
+    <div v-show="record_navList[1].boll">
+      <div class="record_ranking">
+        <p class="record_ranking_title">
+          <img width="63px;" src="../assets/icon_two@2x.png"/>
+          <img class="icon_one" width="63px;" src="../assets/icon_one@2x.png"/>
+          <img width="63px;" src="../assets/icon_three@2x.png"/>
         </p>
-        <p class="num">
-          <span>抓取<i>10</i>次</span>
-          <span>抓取<i>10</i>次</span>
-          <span>抓取<i>10</i>次</span>
-        </p>
-      </div>
-
-      <ul>
-        <li>
         
-        </li>
-      </ul>
+        <div class="rankingBack">
+          <p class="name">
+            <span>逗逼</span>
+            <span class="one">逗逼</span>
+            <span class="three">逗逼</span>
+          </p>
+          <p class="num">
+            <span>抓取<i>10</i>次</span>
+            <span>抓取<i>10</i>次</span>
+            <span>抓取<i>10</i>次</span>
+          </p>
+        </div>
+
+        <ul class="recordList">
+          <li>
+            <p>
+              <label>1</label>
+              <img width="37px" src="../assets/avatar@2x.png"/>
+              <strong>Talk</strong>
+            </p>
+            <p>
+              <span>抓取</span>
+              <b>888</b>
+              <span>次</span>
+            </p>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+
+    <div class="record_ranking" v-show="record_navList[2].boll">
+      <ul class="recordList recordListRecord">
+          <li>
+            <p>
+              <img width="37px" src="../assets/avatar@2x.png"/>
+              <strong>Talk</strong>
+            </p>
+            <p>
+              <span>2小时前</span>
+            </p>
+          </li>
+          <li>
+            <p>
+              <img width="37px" src="../assets/avatar@2x.png"/>
+              <strong>Talk</strong>
+            </p>
+            <p>
+              <span>2小时前</span>
+            </p>
+          </li>
+          <li>
+            <p>
+              <img width="37px" src="../assets/avatar@2x.png"/>
+              <strong>Talk</strong>
+            </p>
+            <p>
+              <span>2小时前</span>
+            </p>
+          </li>
+        </ul>
     </div>
 
   </div>
 </template>
 
 <script>
+
+
 export default {
   name: 'record',
   data () {
@@ -138,6 +183,9 @@ a {
   width: 100%;
   top: -11px;
 }
+.rankingBack .name span{
+  font-size: 19px;
+}
 .rankingBack .one{
   margin-top: -55px;
 }
@@ -154,8 +202,51 @@ a {
   justify-content: space-around;
   align-items: center;
   margin-top: 23px;
+  margin-bottom: -23px;
 }
 .record_ranking_title .icon_one{
   margin-bottom: 70px;
+}
+
+
+.recordList li{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 9px 0px;
+  border-bottom: 1px solid #E7E7E7;
+  padding-bottom: 3px;
+}
+.recordList p{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.recordList label{
+  margin-right: 11px;
+  color: #7F7F7F;
+  font-size: 17px;
+}
+.recordList strong{
+  margin-left: 9px;
+  font-size: 18px;
+}
+.recordList span{
+  color: #aeaeae;
+  font-size: 15px;
+}
+.recordList b{
+  font-size: 26px;
+  color: #E3B249;
+  margin: 0px 7px;
+}
+
+
+/**/
+.recordListRecord{
+  margin-top: 33px;
+}
+.recordListRecord li{
+  margin: 13px 0px;
 }
 </style>
