@@ -4,13 +4,11 @@
       <img width="27px;" src="../assets/icon_back@2x.png"/>
       <div class="liveHeader_qty">
         <label>
-         100人
+         {{received_msg.length}}人
          <br/>在线
         </label>
         <p>
-          <img width="33px;" src="../assets/avatar@2x.png"/>
-          <img width="33px;" src="../assets/avatar@2x.png"/>
-          <img width="33px;" src="../assets/avatar@2x.png"/>
+          <img v-for="(val,key) in received_msg" width="33px;" :src="val.portrait"/>
         </p>
       </div>
     </header>
@@ -20,9 +18,9 @@
       <canvas id="jsmpeg-player2"></canvas>
       <div class="videoSet_up">
         <div class="">
-          <img width="33px;" src="../assets/avatar@2x.png"/>
+          <img width="33px;" :src="gamePlayer.portrait"/>
           <p>
-            <label>anmi</label>
+            <label>{{gamePlayer.nickname}}</label>
             <strong>游戏中</strong>
           </p>
         </div>
@@ -47,21 +45,25 @@
         
         <div class="wait">
           <img width="70px;" src="../assets/icon_chat_click@2x.png"/>
-          <p>
-            <strong>
-              预约排队
-            </strong>
-            <span>
-              前面2人
-            </span>
-          </p>
+          <div @click="lineUp()" :class="{lineUpBox:lineUpBoll}">
+            <strong class="lineUp" v-if="lineUpBoll">排队中...</strong>
+            <p v-else>
+              <strong>
+                预约排队
+              </strong>
+              <span>
+                前面2人
+              </span>
+            </p>
+          </div>
           <img width="70px;" src="../assets/btn_Recharge_click@2x.png"/>
         </div>
       </div>
 
-      <div class="operation">
+      <div class="operation" v-show="operation">
         <div>
-          <img class="btn_up" @click="btn_upEve()" width="60px;" src="../assets/btn_up@2x.png"/>
+          <span class="btn_up" @click="btn_upEve()" v-on:mouseup="eve()"></span>
+          <!-- <img class="btn_up" @click="btn_upEve()" v-on:mouseup="eve()" width="60px;" src="../assets/btn_up@2x.png"/> -->
           <p>
             <img width="60px;" @click="btn_leftEve()" src="../assets/btn_left@2x.png"/>
             <img class="btn_right" @click="btn_rightEve()" width="60px;" src="../assets/btn_right@2x.png"/>
@@ -90,11 +92,25 @@ export default {
   data () {
     return {
       //操作等待
-      wait:false,
-      wawaCode:0
+      wait:true,
+      lineUpBoll:false,
+      operation:false,
+      wawaCode:0,
+      //用户数据
+      received_msg:[],
+      //当前玩家
+      gamePlayer:{'nickname':'二狗子','portrait':require('../assets/avatar@2x.png')},
+      //计时
+      time_config:{}
     }
   },
   mounted(){
+
+    // document.getElementById('jsmpeg-player').style.width = "100%";
+    let height_ = document.documentElement.clientHeight-207;
+    //console.log(height_)
+    document.getElementById('jsmpeg-player').style.height = height_+"px";
+
     var client = AgoraCMH5SDK.createClient();
     client.init('fa715ad316694ac8a88cbb05a878fb15', 'alice', {
       //对应的动态key，如果没有请不需要传null，直接不带这个参数即可，可选 alicerm1 AliceRm1
@@ -113,14 +129,13 @@ export default {
       }, function(){
         //视频开始播放的回调
         console.log("started playing..");
-        document.getElementById('jsmpeg-player').style.width = "100%";
+        // document.getElementById('jsmpeg-player').style.width = "100%";
         let height_ = document.documentElement.clientHeight-207;
         document.getElementById('jsmpeg-player').style.height = height_+"px";
 
       });
     });
-
-
+    let _this = this;
     //WebSocket推流操作
     if ("WebSocket" in window){
        //console.log("您的浏览器支持 WebSocket!");
@@ -128,26 +143,30 @@ export default {
        // 打开一个 web socket
        var ws = new WebSocket("ws://red.alice.live:9001");
       
-       ws.onopen = function()
-       {
+       ws.onopen = function(){
         // Web Socket 已连接上，使用 send() 方法发送数据
-        var json = {"cmd":66,"cid":1168,"roomid":47,"join":1};
+        var json = {"cmd":66,"cid":1168,"roomid":47,"join":0,'flag':0};
 
         ws.send(JSON.stringify(json));
         //console.log("数据发送中...");
        };
       
        ws.onmessage = function (evt) {
-        //console.log(evt.data)
-        var received_msg = JSON.parse(evt.data);
-
-        // if(received_msg.cmd==66){
-        //   console.log(JSON.stringify(received_msg.cmds))
-        //   for(let inde in received_msg.cmds){
-        //     console.log(JSON.stringify(received_msg.cmds[inde]))
-        //     break
-        //   }
-        // }
+        console.log(evt.data)
+        let received_msg = JSON.parse(evt.data);
+        if(received_msg.cmd==66){
+          //当前玩家
+          if(received_msg.current_user!={}){
+            _this.gamePlayer = received_msg.current_user;
+          }
+          //倒计时
+          _this.time_config = received_msg.time_config;
+          //console.log(JSON.stringify(received_msg.cmds))
+          for(let inde in received_msg.cmds){
+            //console.log(JSON.stringify(received_msg.cmds[inde].content))
+            _this.received_msg = received_msg.cmds[inde].content
+          }
+        }
         //console.log("数据已接收...");
        };
       
@@ -161,14 +180,73 @@ export default {
     }
 
 
+    
+
+
   },
   methods:{
+    // 排队
+    lineUp(){
+      if(this.lineUpBoll){
+        return false
+      }
+      let _this = this
+      //WebSocket推流操作
+      if ("WebSocket" in window){
+         //console.log("您的浏览器支持 WebSocket!");
+         
+         // 打开一个 web socket
+         var ws = new WebSocket("ws://red.alice.live:9001");
+        
+         ws.onopen = function(){
+          // Web Socket 已连接上，使用 send() 方法发送数据
+          var json = {"cmd":66,"cid":1168,"roomid":47,"join":1,'flag':1};
+
+          ws.send(JSON.stringify(json));
+          //console.log("数据发送中...");
+         };
+        
+         ws.onmessage = function (evt) {
+          console.log(evt.data)
+          let received_msg = JSON.parse(evt.data);
+          if(received_msg.cmd==66){
+            //当前玩家
+            //当前玩家
+            if(received_msg.current_user!={}){
+              _this.gamePlayer = received_msg.current_user;
+            }
+            //倒计时
+            _this.time_config = received_msg.time_config;
+            //console.log(JSON.stringify(received_msg.cmds))
+            for(let inde in received_msg.cmds){
+              //console.log(JSON.stringify(received_msg.cmds[inde].content))
+              _this.received_msg = received_msg.cmds[inde].content
+            }
+          }
+          //console.log("数据已接收...");
+         };
+        
+         ws.onclose = function(){ 
+          // 关闭 websocket
+          alert("连接已关闭..."); 
+         };
+      }else{
+         // 浏览器不支持 WebSocket
+         alert("您的浏览器不支持 WebSocket!");
+      }
+
+      this.lineUpBoll = true;
+
+    },
+    //获取code
     start(){
+      this.operation = true;
+      this.wait = false
       let _this = this;
-      axios.post('https://red.alice.live/wawa/catch-start','')
+      axios.post('https://red.alice.live/wawa/catch-start',qs.stringify({cid:'1168',room_id:'47'}))
       .then(function(dataJson){
         console.log(JSON.stringify(dataJson.data))
-        _this.wawaCode = dataJson.data.data
+        _this.wawaCode = dataJson.data.data;
       })
       .catch(function(err){
         alert(err);
@@ -179,7 +257,7 @@ export default {
     btn_upEve(){
       let _this = this
       if(_this.wawaCode){
-        axios.post('https://red.alice.live/wawa/catch-forward',qs.stringify({verify_code:_this.wawaCode}))
+        axios.post('https://red.alice.live/wawa/catch-forward',qs.stringify({verify_code:_this.wawaCode,cid:'1168',room_id:'47'}))
         .then(function(dataJson){
           console.log(dataJson.data)
         })
@@ -193,7 +271,7 @@ export default {
     btn_leftEve(){
       let _this = this
       if(_this.wawaCode){
-        axios.post('https://red.alice.live/wawa/catch-left',qs.stringify({verify_code:_this.wawaCode}))
+        axios.post('https://red.alice.live/wawa/catch-left',qs.stringify({verify_code:_this.wawaCode,cid:'1168',room_id:'47'}))
         .then(function(dataJson){
           console.log(dataJson.data)
         })
@@ -207,7 +285,7 @@ export default {
     btn_rightEve(){
       let _this = this
       if(_this.wawaCode){
-        axios.post('https://red.alice.live/wawa/catch-right',qs.stringify({verify_code:_this.wawaCode}))
+        axios.post('https://red.alice.live/wawa/catch-right',qs.stringify({verify_code:_this.wawaCode,cid:'1168',room_id:'47'}))
         .then(function(dataJson){
           console.log(dataJson.data)
         })
@@ -221,7 +299,7 @@ export default {
     btn_downEve(){
       let _this = this
       if(_this.wawaCode){
-        axios.post('https://red.alice.live/wawa/catch-back',qs.stringify({verify_code:_this.wawaCode}))
+        axios.post('https://red.alice.live/wawa/catch-back',qs.stringify({verify_code:_this.wawaCode,cid:'1168',room_id:'47'}))
         .then(function(dataJson){
           console.log(dataJson.data)
         })
@@ -235,7 +313,7 @@ export default {
     doEve(){
       let _this = this
       if(_this.wawaCode){
-        axios.post('https://red.alice.live/wawa/catch-do',qs.stringify({verify_code:_this.wawaCode}))
+        axios.post('https://red.alice.live/wawa/catch-do',qs.stringify({verify_code:_this.wawaCode,cid:'1168',room_id:'47'}))
         .then(function(dataJson){
           console.log(dataJson.data)
         })
@@ -244,6 +322,9 @@ export default {
         });
       }
 
+    },
+    eve(){
+      // alert(0)
     }
   }
 }
@@ -261,7 +342,11 @@ ul {
 a {
   color: #42b983;
 }
-
+#jsmpeg-player{
+  position: absolute;
+  left: 50%;
+  transform : translate(-50%,0%);
+}
 
 .liveRoom{
   background-image: url('../assets/bg_main1@2x.png');
@@ -291,7 +376,7 @@ a {
   align-items: center;
 }
 .liveHeader_qty img{
-    margin-left: -11px;
+    margin-left: -9px;
     border: 1px solid #fff;
     border-radius: 50%;
 }
@@ -372,7 +457,7 @@ a {
   padding-bottom: 13px;
 }
 
-.wait p{
+.wait div{
   background-image: url('../assets/btn_lineup@2x.png');
   background-position: center center;
   background-size: 100% 100%;
@@ -380,6 +465,9 @@ a {
   width: 160px;
   height: 90px;
   text-align: center;
+}
+.wait .lineUpBox{
+  background-image: url('../assets/btn_lineup_click@2x.png');
 }
 .wait strong{
   display: block;
@@ -390,6 +478,10 @@ a {
 .wait span{
   color: #939292;
   font-size: 15px;
+}
+.wait .lineUp{
+  color: #C8A95C;
+  margin-top: 23px;
 }
 /*操作*/
 .operation{
@@ -406,6 +498,13 @@ a {
 }
 .operation .btn_up{
   margin-bottom: -33px;
+  background-image: url('../assets/btn_up@2x.png');
+  background-position: center center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  display: inline-block;
+  width: 60px;
+  height: 60px;
 }
 .operation .btn_down{
   margin-top: -33px;

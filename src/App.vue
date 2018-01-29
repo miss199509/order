@@ -25,6 +25,7 @@ p,ul,li{
   height: 100%;
   max-width: 500px;
   margin: auto;
+  overflow: hidden;
 }
 html,body{
 	padding: 0px;
