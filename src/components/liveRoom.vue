@@ -1,83 +1,80 @@
 <template>
   <div class="liveRoom">
-    <header class="liveHeader">
-      <img width="27px;" src="../assets/icon_back@2x.png"/>
-      <div class="liveHeader_qty">
-        <label>
-         {{received_msg.length}}人
-         <br/>在线
-        </label>
-        <p>
-          <img v-for="(val,key) in received_msg" width="33px;" :src="val.portrait"/>
-        </p>
-      </div>
+    <header class="header_title">
+      <h3>lst饲养员：Talk</h3>
     </header>
-    
-    <div class="video_box">
-      <canvas id="jsmpeg-player"></canvas>
-      <canvas id="jsmpeg-player2"></canvas>
-      <div class="videoSet_up">
-        <div class="">
-          <img width="33px;" :src="gamePlayer.portrait"/>
-          <p>
-            <label>{{gamePlayer.nickname}}</label>
-            <strong>游戏中</strong>
+
+    <div class="ues_indexBox">
+      <ul>
+        <li class="ues_header">
+          <p class="ues_portrait">
+            <img src="../assets/avatar@2x.png"/>
           </p>
-        </div>
-        <img @click="start()" class="switch" width="47px;" src="../assets/btn_switch@2x.png"/>
+          <p class="ues_heartBar">
+            <img width="35px;" src="../assets/icon_heart@2x.png"/>
+            <strong>3699</strong>
+            <img style="margin-right: -7px;" width="45px;" src="../assets/add_normal@2x.png"/>
+          </p>
+        </li>
+        <li class="ues_list">
+          <p>
+            <img width="60px" src="../assets/btn_task_normal@2x.png"/>
+          </p>
+          <p>
+            <img width="60px" src="../assets/btn_toy_normal@2x.png"/>
+          </p>
+          <p>
+            <img width="60px" src="../assets/btn_talk_normal@2x.png"/>
+          </p>
+          <img class="leftarrow" width="23px;" src="../assets/icon_Leftarrow@2x.png"/>
+        </li>
+        <li>
+          <img class="bg_light" src="../assets/bg_light@2x.png"/>
+        </li>
+      </ul>
+      <ul class="ranking">
+        <p class="rankingOne">
+          <img src="../assets/avatar@2x.png"/>
+        </p>
+        <p class="rankingTwo">
+          <img src="../assets/avatar@2x.png"/>
+        </p>
+      </ul>
+    </div>
+
+    <div class="uesPet_box">
+      <div class="uesPet_current">
+        <p class="uesPet_portrait">
+          <img src="../assets/avatar@2x.png"/>
+        </p>
+        <p class="uesPet_title">
+          <span>小白123</span>
+        </p>
+        <img class="uesSwitch" width="43px;" src="../assets/icon_arrow@2x.png"/>
       </div>
     </div>
   
-    <div class="operation_box">
-      <div class="operation_padding" v-show="wait">
-        <ul class="livePrice">
-          <li>
-            <label>本次:</label>
-            <img width="23px;" src="../assets/icon_dc@2x.png"/>
-            <label>100.00/次</label>
-          </li>
-          <li>
-            <label>余额:</label>
-            <img width="23px;" src="../assets/icon_dc@2x.png"/>
-            <label>100.00</label>
-          </li>
-        </ul>
-        
-        <div class="wait">
-          <img width="70px;" src="../assets/icon_chat_click@2x.png"/>
-          <div @click="lineUp()" :class="{lineUpBox:lineUpBoll}">
-            <strong class="lineUp" v-if="lineUpBoll">排队中...</strong>
-            <p v-else>
-              <strong>
-                预约排队
-              </strong>
-              <span>
-                前面2人
-              </span>
-            </p>
-          </div>
-          <img width="70px;" src="../assets/btn_Recharge_click@2x.png"/>
-        </div>
-      </div>
+    <p class="set_up">
+      <img width="35px;" src="../assets/btn_muise_normal@2x.png"/>
+      <img width="35px;" src="../assets/btn_Options_normal@2x.png"/>
+    </p>
 
-      <div class="operation" v-show="operation">
-        <div>
-          <span class="btn_up" @click="btn_upEve()" v-on:mouseup="eve()"></span>
-          <!-- <img class="btn_up" @click="btn_upEve()" v-on:mouseup="eve()" width="60px;" src="../assets/btn_up@2x.png"/> -->
-          <p>
-            <img width="60px;" @click="btn_leftEve()" src="../assets/btn_left@2x.png"/>
-            <img class="btn_right" @click="btn_rightEve()" width="60px;" src="../assets/btn_right@2x.png"/>
-          </p>
-          <img class="btn_down" @click="btn_downEve()" width="60px;" src="../assets/btn_down@2x.png"/>
-        </div>
-
-        <p>
-          <img @click="doEve()" width="130px;" src="../assets/btn_Grab@2x.png"/>
-        </p>
-      </div>
-    
+    <div class="words_box">
+      <ul>
+        <li>
+          <strong>留言标题</strong>
+          <span>2018.2.5</span>
+        </li>
+        <li>
+          <strong>留言标题</strong>
+          <span>2018.2.5</span>
+        </li>
+        <li>
+          <strong>留言标题</strong>
+          <span>2018.2.5</span>
+        </li>
+      </ul>
     </div>
-
 
   </div>
 </template>
@@ -91,241 +88,17 @@ export default {
   name: 'liveRoom',
   data () {
     return {
-      //操作等待
-      wait:true,
-      lineUpBoll:false,
-      operation:false,
-      wawaCode:0,
-      //用户数据
-      received_msg:[],
-      //当前玩家
-      gamePlayer:{'nickname':'二狗子','portrait':require('../assets/avatar@2x.png')},
-      //计时
-      time_config:{}
+
     }
   },
   mounted(){
-
-    // document.getElementById('jsmpeg-player').style.width = "100%";
-    let height_ = document.documentElement.clientHeight-207;
-    //console.log(height_)
-    document.getElementById('jsmpeg-player').style.height = height_+"px";
-
-    var client = AgoraCMH5SDK.createClient();
-    client.init('fa715ad316694ac8a88cbb05a878fb15', 'alice', {
-      //对应的动态key，如果没有请不需要传null，直接不带这个参数即可，可选 alicerm1 AliceRm1
-      //key: key,
-      //主摄像头uid，默认为1，可选
-      uid1: 2587758,
-      //副摄像头uid，默认为2，可选
-      uid2: 2
-    }, function(){
-      //初始化成功
-      client.play({
-        //canvas 1 id
-        canvas1: "jsmpeg-player",
-        //canvas 2 id
-        canvas2: "jsmpeg-player2"
-      }, function(){
-        //视频开始播放的回调
-        console.log("started playing..");
-        // document.getElementById('jsmpeg-player').style.width = "100%";
-        let height_ = document.documentElement.clientHeight-207;
-        document.getElementById('jsmpeg-player').style.height = height_+"px";
-
-      });
-    });
-    let _this = this;
-    //WebSocket推流操作
-    if ("WebSocket" in window){
-       //console.log("您的浏览器支持 WebSocket!");
-       
-       // 打开一个 web socket
-       var ws = new WebSocket("ws://red.alice.live:9001");
-      
-       ws.onopen = function(){
-        // Web Socket 已连接上，使用 send() 方法发送数据
-        var json = {"cmd":66,"cid":1168,"roomid":47,"join":0,'flag':0};
-
-        ws.send(JSON.stringify(json));
-        //console.log("数据发送中...");
-       };
-      
-       ws.onmessage = function (evt) {
-        console.log(evt.data)
-        let received_msg = JSON.parse(evt.data);
-        if(received_msg.cmd==66){
-          //当前玩家
-          if(received_msg.current_user!={}){
-            _this.gamePlayer = received_msg.current_user;
-          }
-          //倒计时
-          _this.time_config = received_msg.time_config;
-          //console.log(JSON.stringify(received_msg.cmds))
-          for(let inde in received_msg.cmds){
-            //console.log(JSON.stringify(received_msg.cmds[inde].content))
-            _this.received_msg = received_msg.cmds[inde].content
-          }
-        }
-        //console.log("数据已接收...");
-       };
-      
-       ws.onclose = function(){ 
-        // 关闭 websocket
-        alert("连接已关闭..."); 
-       };
-    }else{
-       // 浏览器不支持 WebSocket
-       alert("您的浏览器不支持 WebSocket!");
-    }
-
 
     
 
 
   },
   methods:{
-    // 排队
-    lineUp(){
-      if(this.lineUpBoll){
-        return false
-      }
-      let _this = this
-      //WebSocket推流操作
-      if ("WebSocket" in window){
-         //console.log("您的浏览器支持 WebSocket!");
-         
-         // 打开一个 web socket
-         var ws = new WebSocket("ws://red.alice.live:9001");
-        
-         ws.onopen = function(){
-          // Web Socket 已连接上，使用 send() 方法发送数据
-          var json = {"cmd":66,"cid":1168,"roomid":47,"join":1,'flag':1};
-
-          ws.send(JSON.stringify(json));
-          //console.log("数据发送中...");
-         };
-        
-         ws.onmessage = function (evt) {
-          console.log(evt.data)
-          let received_msg = JSON.parse(evt.data);
-          if(received_msg.cmd==66){
-            //当前玩家
-            //当前玩家
-            if(received_msg.current_user!={}){
-              _this.gamePlayer = received_msg.current_user;
-            }
-            //倒计时
-            _this.time_config = received_msg.time_config;
-            //console.log(JSON.stringify(received_msg.cmds))
-            for(let inde in received_msg.cmds){
-              //console.log(JSON.stringify(received_msg.cmds[inde].content))
-              _this.received_msg = received_msg.cmds[inde].content
-            }
-          }
-          //console.log("数据已接收...");
-         };
-        
-         ws.onclose = function(){ 
-          // 关闭 websocket
-          alert("连接已关闭..."); 
-         };
-      }else{
-         // 浏览器不支持 WebSocket
-         alert("您的浏览器不支持 WebSocket!");
-      }
-
-      this.lineUpBoll = true;
-
-    },
-    //获取code
-    start(){
-      this.operation = true;
-      this.wait = false
-      let _this = this;
-      axios.post('https://red.alice.live/wawa/catch-start',qs.stringify({cid:'1168',room_id:'47'}))
-      .then(function(dataJson){
-        console.log(JSON.stringify(dataJson.data))
-        _this.wawaCode = dataJson.data.data;
-      })
-      .catch(function(err){
-        alert(err);
-      });
-
-    },
-    //按钮上
-    btn_upEve(){
-      let _this = this
-      if(_this.wawaCode){
-        axios.post('https://red.alice.live/wawa/catch-forward',qs.stringify({verify_code:_this.wawaCode,cid:'1168',room_id:'47'}))
-        .then(function(dataJson){
-          console.log(dataJson.data)
-        })
-        .catch(function(err){
-          alert(err);
-        });
-      }
-
-    },
-    //按钮左
-    btn_leftEve(){
-      let _this = this
-      if(_this.wawaCode){
-        axios.post('https://red.alice.live/wawa/catch-left',qs.stringify({verify_code:_this.wawaCode,cid:'1168',room_id:'47'}))
-        .then(function(dataJson){
-          console.log(dataJson.data)
-        })
-        .catch(function(err){
-          alert(err);
-        });
-      }
-
-    },
-    //按钮右
-    btn_rightEve(){
-      let _this = this
-      if(_this.wawaCode){
-        axios.post('https://red.alice.live/wawa/catch-right',qs.stringify({verify_code:_this.wawaCode,cid:'1168',room_id:'47'}))
-        .then(function(dataJson){
-          console.log(dataJson.data)
-        })
-        .catch(function(err){
-          alert(err);
-        });
-      }
-
-    },
-    //按钮下
-    btn_downEve(){
-      let _this = this
-      if(_this.wawaCode){
-        axios.post('https://red.alice.live/wawa/catch-back',qs.stringify({verify_code:_this.wawaCode,cid:'1168',room_id:'47'}))
-        .then(function(dataJson){
-          console.log(dataJson.data)
-        })
-        .catch(function(err){
-          alert(err);
-        });
-      }
-
-    },
-    //抓取
-    doEve(){
-      let _this = this
-      if(_this.wawaCode){
-        axios.post('https://red.alice.live/wawa/catch-do',qs.stringify({verify_code:_this.wawaCode,cid:'1168',room_id:'47'}))
-        .then(function(dataJson){
-          console.log(dataJson.data)
-        })
-        .catch(function(err){
-          alert(err);
-        });
-      }
-
-    },
-    eve(){
-      // alert(0)
-    }
+   
   }
 }
 </script>
@@ -349,164 +122,221 @@ a {
 }
 
 .liveRoom{
-  background-image: url('../assets/bg_main1@2x.png');
+  background-image: url('../assets/bg_main@2x.png');
   background-position: center center;
   background-size: 100% 100%;
   background-repeat: no-repeat;
   height: 100%;
-  padding: 0px 11px;
 }
 
-.liveHeader{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 7px 0px;
+
+.header_title{
+  background-image: url('../assets/bg_tiitle@2x.png');
+  background-position: center center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  width: 100%;
+  height: 55px;
+  line-height: 55px;
 }
-.liveHeader label{
-  color: #fff;
+
+.header_title h3{
+  font-size: 23px;
   text-align: center;
-  display: block;
-  font-size: 16px;
-  margin-right: 15px;
-}
-.liveHeader_qty{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.liveHeader_qty img{
-    margin-left: -9px;
-    border: 1px solid #fff;
-    border-radius: 50%;
+  color: #FFF9CC;
 }
 
-.video_box{
+
+
+
+
+.ues_indexBox{
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  margin-top: 13px;
   position: relative;
 }
-.videoSet_up{
-  position: absolute;
-  top: 13px;
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 
+
+.ues_header{
+  position: relative;
+  height: 83px;
 }
-
-.videoSet_up div{
-  background-image: url('../assets/bg_avatar@2x.png');
+.ues_portrait{
+  background-image: url('../assets/icon_M@2x.png');
   background-position: center center;
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  margin-left: 7px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 4px 11px;
-}
-.videoSet_up p{
-  margin: 0px 17px;
-  text-align:center;
-}
-.videoSet_up label{
-  color: #fff;
-  display: block;
-  font-size: 13px;
-}
-.videoSet_up strong{
-  color: #fff;
-  font-size: 13px;
-}
-
-
-
-.livePrice li{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.livePrice{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid #fff;
-  padding-bottom: 7px;
-}
-.livePrice label{
-  font-size: 17px;
-}
-
-
-
-.operation_box{
+  height: 55px;
+  width: 55px;
+  border-radius: 50%;
+  padding: 9px;
   position: absolute;
-  bottom: 0px;
-  width: 100%;
+  top: 0px;
   left: 0px;
+  z-index: 1;
 }
-.operation_padding{
-  padding: 0px 11px;
+.ues_portrait img{
+  width: 100%;
+  border-radius: 50%;
+  height: 100%;
+
 }
 
-.wait{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 7px;
-  padding-bottom: 13px;
-}
-
-.wait div{
-  background-image: url('../assets/btn_lineup@2x.png');
+.ues_heartBar{
+  background-image: url('../assets/bg_heartBar@2x.png');
   background-position: center center;
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  width: 160px;
-  height: 90px;
-  text-align: center;
+  width: 155px;
+  height: 45px;
+  position: absolute;
+  top: 0px;
+  left: 23px;
+  padding-left: 51px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.wait .lineUpBox{
-  background-image: url('../assets/btn_lineup_click@2x.png');
-}
-.wait strong{
-  display: block;
+.ues_heartBar strong{
   font-size: 23px;
-  color: #F63630;
-  margin-top: 11px;
+  color: #EDF5FF;
 }
-.wait span{
-  color: #939292;
-  font-size: 15px;
-}
-.wait .lineUp{
-  color: #C8A95C;
-  margin-top: 23px;
-}
-/*操作*/
-.operation{
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0px 7px;
-}
-.operation div{
-  text-align: center;
-}
-.operation .btn_right{
-  margin-left: 50px;
-}
-.operation .btn_up{
-  margin-bottom: -33px;
-  background-image: url('../assets/btn_up@2x.png');
+
+
+.ues_list{
+  background-image: url('../assets/bg_function_L@2x.png');
   background-position: center center;
   background-size: 100% 100%;
   background-repeat: no-repeat;
-  display: inline-block;
+  width: 105px;
+  height: 209px;
+  padding: 7px 0px 7px 9px;
+  position: relative;
+}
+.ues_list .leftarrow{
+  position: absolute;
+  transform: translate(0%,-50%);
+  top: 50%;
+  right: 10px;
+}
+
+.bg_light{
+  position: absolute;
+  top: 50px;
+  left: 42px;
+  width: 180px;
+  height: 205px;
+}
+
+.ranking{
+  background-image: url('../assets/btn_Ranking_click@2x.png');
+  background-position: center center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  width: 110px;
+  height: 188px;
+  padding-top: 70px;
+}
+.ranking p{
+  margin: auto;
+  background-position: center center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
   width: 60px;
+  height: 70px;
+  padding: 9px;
+}
+.ranking img{
+  width: 100%;
+  border-radius: 50%;
+  margin-top: 7px;
+  margin-left: 2px;
+}
+.rankingOne{
+  background-image: url('../assets/icon_1st@2x.png');
+}
+.rankingTwo{
+  background-image: url('../assets/icon_Candidate@2x.png');
+}
+
+/*当前*/
+
+.uesPet_current{
+  position: relative;
+}
+.uesPet_portrait{
+  background-position: center center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-image: url('../assets/icon_L@2x.png');
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  text-align: center;
+  padding: 25px;
+  margin: auto;
+
+}
+.uesPet_portrait img{
+  width: 100%;
+  margin-top: -6px;
+  margin-left: 1px;
+}
+
+
+.uesPet_title{
+  background-position: center center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-image: url('../assets/bg_L@2x.png');
+  width: 195px;
+  text-align: center;
+  margin: auto;
+  margin-top: -35px;
   height: 60px;
 }
-.operation .btn_down{
-  margin-top: -33px;
+.uesPet_title span{
+  font-size: 19px;
+  color: #fff;
+}
+.uesPet_title img{
+  width: 100%;
+  display: block;
+}
+.uesSwitch{
+  position: absolute;
+  top: 50%;
+  right: 0px;
+  transform : translate(-50%,0%);
+}
+
+.words_box{
+  background-position: center center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  background-image: url('../assets/bg_talk@2x.png');
+  height: 300px;
+  padding: 0px 15px;
+}
+.words_box li{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom:1px solid #6C5938;
+  padding: 5px 3px;
+}
+.words_box strong{
+  color: #fff;
+  font-size: 19px;
+}
+.words_box span{
+  color: #fff;
+  font-size: 19px;
+}
+.set_up{
+  text-align: -webkit-right;
+  margin-right: 7px;
 }
 </style>

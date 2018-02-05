@@ -14,7 +14,7 @@ export default {
 i{
   font-style: normal
 }
-p,ul,li{
+p,ul,li,h1,h2,h3,h4,h5{
   padding:0px;
   margin:0px;
 }
