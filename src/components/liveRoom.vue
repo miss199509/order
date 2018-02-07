@@ -26,7 +26,7 @@
           <p>
             <img width="60px" src="../assets/btn_talk_normal@2x.png"/>
           </p>
-          <img class="leftarrow" width="23px;" src="../assets/icon_Leftarrow@2x.png"/>
+          <img @click="" class="leftarrow" width="23px;" src="../assets/icon_Leftarrow@2x.png"/>
         </li>
         <li>
           <img class="bg_light" src="../assets/bg_light@2x.png"/>
@@ -76,6 +76,8 @@
       </ul>
     </div>
 
+    <Alert :logo="text" :boll="boll"></Alert>
+
   </div>
 </template>
 
@@ -84,12 +86,19 @@
 import axios from 'axios'
 import qs from 'qs'
 
+
+import Alert from '../components/alert'
+
 export default {
   name: 'liveRoom',
   data () {
     return {
-
+      text:'000',
+      boll:true,
     }
+  },
+  components:{
+    Alert
   },
   mounted(){
 
@@ -220,6 +229,7 @@ a {
   transform: translate(0%,-50%);
   top: 50%;
   right: 10px;
+  z-index: 11;
 }
 
 .bg_light{
@@ -257,8 +267,10 @@ a {
 .rankingOne{
   background-image: url('../assets/icon_1st@2x.png');
 }
-.rankingTwo{
+.ranking .rankingTwo{
   background-image: url('../assets/icon_Candidate@2x.png');
+  width: 50px;
+  height: 60px;
 }
 
 /*当前*/
@@ -317,7 +329,6 @@ a {
   background-size: 100% 100%;
   background-repeat: no-repeat;
   background-image: url('../assets/bg_talk@2x.png');
-  height: 300px;
   padding: 0px 15px;
 }
 .words_box li{

@@ -22,10 +22,8 @@ p,ul,li,h1,h2,h3,h4,h5{
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100%;
   max-width: 500px;
   margin: auto;
-  overflow: hidden;
 }
 html,body{
 	padding: 0px;
